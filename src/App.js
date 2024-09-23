@@ -5,8 +5,8 @@ function App() {
   const animals = ['cat', 'dog', 'cow', 'deer'];
   const [checked, setChecked] = useState({});
   
+  const storedChecked = localStorage.getItem('checked');
   useEffect(() => {
-    const storedChecked = localStorage.getItem('checked');
     if (storedChecked) {
       setChecked(JSON.parse(storedChecked));
     } else {
