@@ -1,23 +1,48 @@
-import logo from './logo.svg';
-import './App.css';
+import { useEffect, useState } from "react";
+import "./App.css";
 
 function App() {
+  const animals = ['cat', 'dog', 'cow', 'deer'];
+  const [checked, setChecked] = useState({});
+  
+  useEffect(() => {
+    const storedChecked = localStorage.getItem('checked');
+    if (storedChecked) {
+      setChecked(JSON.parse(storedChecked));
+    } else {
+      setChecked(animals.reduce((acc, animal) => ({ ...acc, [animal]: false }), {}));
+    }
+  }, []); 
+
+  useEffect(() => {
+    localStorage.setItem('checked', JSON.stringify(checked));
+  }, [checked]); 
+
+  const handleSelectAll = () => {
+    setChecked(animals.reduce((acc, animal) => ({ ...acc, [animal]: true }), {}));
+  };
+
+  const handleCheckboxChange = (name) => {
+    setChecked((prevChecked) => ({ ...prevChecked, [name]: !prevChecked[name] }));
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <h1>Checkboxes</h1>
+      <button onClick={handleSelectAll}>Select all</button>
+      <ul>
+        {animals.map((animal) => (
+          <li key={animal}>
+            <input
+              type="checkbox"
+              name={animal}
+              checked={checked[animal]}
+              onChange={() => handleCheckboxChange(animal)}
+            />
+            <label>{animal}</label>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }
